@@ -24,7 +24,7 @@ struct rtsp_session {
     unsigned int cport_to;      /* client port to   */
     unsigned int sport_from;    /* server port from */
     unsigned int sport_to;      /* server port to   */
-    unsigned long session;      /* session ID       */
+    char *session;      /* session ID       */
 };
 
 /* Last Sender Report timestamp (middle 32 bits) */
@@ -38,13 +38,11 @@ struct rtsp_session {
 #define CMD_OPTIONS       "OPTIONS rtsp://%s:%lu RTSP/1.0\r\nCSeq: %i\r\n\r\n"
 #define CMD_DESCRIBE      "DESCRIBE %s RTSP/1.0\r\nCSeq: %i\r\nAccept: application/sdp\r\n\r\n"
 
-//#define CMD_SETUP         "SETUP %s/trackID=1 RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=%i-%i\r\n\r\n"
+//#define CMD_SETUP         "SETUP %s  RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=54984-54985\r\n\r\n"
+#define CMD_SETUP         "SETUP %s  RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=%i-%i\r\n\r\n"
+//#define CMD_SETUP         "SETUP %s RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP/TCP;interleaved=0-1;\r\n\r\n"
 
-#define CMD_SETUP         "SETUP %s/trackID=1 RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP/TCP;interleaved=0-1;\r\n\r\n"
-
-
-
-#define CMD_PLAY          "PLAY %s RTSP/1.0\r\nCSeq: %i\r\nSession: %lu\r\nRange: npt=0.00-\r\n\r\n"
+#define CMD_PLAY          "PLAY %s RTSP/1.0\r\nCSeq: %i\r\nSession: %s\r\nRange: npt=0.00-\r\n\r\n"
 
 /* Transport header constants */
 #define SETUP_SESSION      "Session: "

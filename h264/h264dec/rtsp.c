@@ -236,7 +236,8 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
     int client_port_to = -1;
     int server_port_from = -1;
     int server_port_to = -1;
-    unsigned long session_id;
+//    unsigned long session_id;
+    char *session_id;
     char *p;
     char *sep;
     char *err;
@@ -246,13 +247,14 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
     RTSP_INFO("SETUP: command\n");
 
     memset(buf, '\0', sizeof(buf));
-    //n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq, client_port, client_port + 1);
-    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq);
+    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq, client_port, client_port + 1);
+    //n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq);
 
     DEBUG_REQ(buf);
     n = send(sock, buf, n, 0);
 
     RTSP_INFO("SETUP: request sent\n");
+    RTSP_INFO("SETUP: %s\n", buf);
 
     memset(buf, '\0', sizeof(buf));
     n = recv(sock, buf, size - 1, 0);
@@ -364,7 +366,11 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
         sep = strchr(p, '\r');
         memset(field, '\0', sizeof(field));
         strncpy(field, p + sizeof(SETUP_SESSION) - 1, sep - p - sizeof(SETUP_SESSION) + 1);
-        session_id = atol(field);
+        session_id = (char *) malloc(field_size);
+        strncpy(session_id, p + sizeof(SETUP_SESSION) - 1, sep - p - sizeof(SETUP_SESSION) + 1);
+
+//        strcpy(session_id, field);
+//        session_id = &(field[0]);
     }
     else {
         RTSP_INFO("SETUP: response status %i: %s\n", status, err);
@@ -385,7 +391,7 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
     return ret;
 }
 
-int rtsp_cmd_play(int sock, char *stream, unsigned long session)
+int rtsp_cmd_play(int sock, char *stream, char *session)
 {
     int n;
     int ret = 0;
@@ -402,6 +408,7 @@ int rtsp_cmd_play(int sock, char *stream, unsigned long session)
     n = send(sock, buf, n, 0);
 
     RTSP_INFO("PLAY: request sent\n");
+    RTSP_INFO("PLAY: %s\n", buf);
 
     memset(buf, '\0', sizeof(buf));
 
@@ -496,6 +503,7 @@ int rtsp_loop()
      }
 
      char *params;
+
      ret = rtsp_cmd_describe(fd, opt_stream, &params);
      if (ret != 0) {
          printf("Error: Could not send DESCRIBE command to RTSP server\n");
