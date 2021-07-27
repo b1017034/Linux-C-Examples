@@ -39,8 +39,8 @@ struct rtsp_session {
 #define CMD_DESCRIBE      "DESCRIBE %s RTSP/1.0\r\nCSeq: %i\r\nAccept: application/sdp\r\n\r\n"
 
 //#define CMD_SETUP         "SETUP %s  RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=54984-54985\r\n\r\n"
-#define CMD_SETUP         "SETUP %s  RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=%i-%i\r\n\r\n"
-//#define CMD_SETUP         "SETUP %s RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP/TCP;interleaved=0-1;\r\n\r\n"
+//#define CMD_SETUP         "SETUP %s  RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP;unicast;client_port=%i-%i\r\n\r\n"
+#define CMD_SETUP         "SETUP %s RTSP/1.0\r\nCSeq: %i\r\nTransport: RTP/AVP/TCP;interleaved=0-1;\r\n\r\n"
 
 #define CMD_PLAY          "PLAY %s RTSP/1.0\r\nCSeq: %i\r\nSession: %s\r\nRange: npt=0.00-\r\n\r\n"
 
@@ -48,5 +48,5 @@ struct rtsp_session {
 #define SETUP_SESSION      "Session: "
 #define SETUP_TRNS_CLIENT  "client_port="
 #define SETUP_TRNS_SERVER  "server_port="
-
+int rtsp_loop();
 #endif

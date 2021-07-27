@@ -57,7 +57,7 @@ int streamer_prepare(const char *name,
 
 /*
  * Create the local Pipe, this pipe is used to transfer the
- * extracted H264 data to the unix socket. It also takes care
+ * extracted H264 data to the ustnix socket. It also takes care
  * to increase the pipe buffer size.
  */
 int streamer_pipe_init(int pipefd[2])

@@ -33,7 +33,7 @@ struct rtp_stats {
     uint16_t first_seq;         /* first sequence                   */
     uint16_t highest_seq;       /* highest sequence                 */
     uint16_t rtp_received;      /* RTP sequence number received     */
-    uint32_t rtp_identifier;    /* source identifier                */
+    char    *rtp_identifier;    /* source identifier                */
     uint32_t rtp_ts;            /* RTP timestamp                    */
     uint32_t rtp_cum_lost;       /* RTP cumulative packet lost       */
     uint32_t rtp_expected_prior;/* RTP expected prior               */

@@ -240,6 +240,7 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
     char *session_id;
     char *p;
     char *sep;
+    char *section_sec;
     char *err;
     char buf[size];
     char field[field_size];
@@ -247,20 +248,21 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
     RTSP_INFO("SETUP: command\n");
 
     memset(buf, '\0', sizeof(buf));
-    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq, client_port, client_port + 1);
-    //n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq);
+//    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq, client_port, client_port + 1);
+//    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq, stream_port, stream_port + 1);
+    n = snprintf(buf, size, CMD_SETUP, stream, rtsp_cseq);
 
     DEBUG_REQ(buf);
     n = send(sock, buf, n, 0);
 
     RTSP_INFO("SETUP: request sent\n");
-    RTSP_INFO("SETUP: %s\n", buf);
 
     memset(buf, '\0', sizeof(buf));
     n = recv(sock, buf, size - 1, 0);
     if (n <= 0) {
         printf("Error: Server did not respond properly, closing...");
         close(sock);
+      printf("test");
         exit(EXIT_FAILURE);
     }
 
@@ -366,8 +368,16 @@ int rtsp_cmd_setup(int sock, char *stream, struct rtsp_session *session)
         sep = strchr(p, '\r');
         memset(field, '\0', sizeof(field));
         strncpy(field, p + sizeof(SETUP_SESSION) - 1, sep - p - sizeof(SETUP_SESSION) + 1);
-        session_id = (char *) malloc(field_size);
-        strncpy(session_id, p + sizeof(SETUP_SESSION) - 1, sep - p - sizeof(SETUP_SESSION) + 1);
+        section_sec = strchr(field, ';');
+        if (section_sec != NULL) {
+          session_id = (char *) malloc(section_sec - field);
+          strncpy(session_id, p + sizeof(SETUP_SESSION) - 1, section_sec - field);
+        }
+        else {
+          session_id = (char *) malloc(field_size);
+          strncpy(session_id, p + sizeof(SETUP_SESSION) - 1, sep - p - sizeof(SETUP_SESSION) + 1);
+        }
+
 
 //        strcpy(session_id, field);
 //        session_id = &(field[0]);
@@ -408,7 +418,6 @@ int rtsp_cmd_play(int sock, char *stream, char *session)
     n = send(sock, buf, n, 0);
 
     RTSP_INFO("PLAY: request sent\n");
-    RTSP_INFO("PLAY: %s\n", buf);
 
     memset(buf, '\0', sizeof(buf));
 
@@ -487,6 +496,7 @@ int rtsp_connect(char *stream)
 int rtsp_loop()
 {
      int fd;
+     //int ff = net_udp_connect(stream_host, RTSP_CLIENT_PORT);
      int ret;
      struct rtsp_session rtsp_s;
      pid_t streamer_worker;
@@ -700,7 +710,7 @@ int rtsp_loop()
                     goto read_pending;
                 }
 
-                if (rtp_st.rtp_received % 20) {
+                if (rtp_st.rtp_received % 20 == 0) {
                     rtsp_rtcp_reports(fd);
                 }
 

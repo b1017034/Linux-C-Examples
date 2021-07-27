@@ -165,3 +165,8 @@ int net_send32(int fd, uint32_t n)
     uint32_t nbo = htonl(n);
     return send(fd, &nbo, sizeof(nbo), 0);
 }
+
+int net_send_c(int fd, char *c)
+{
+    return send(fd, &c, sizeof(c), 0);
+}

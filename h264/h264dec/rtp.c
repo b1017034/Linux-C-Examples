@@ -89,7 +89,7 @@ unsigned int rtp_parse(unsigned char *raw, unsigned int size)
         (raw[raw_offset + 2] <<  8) |
         (raw[raw_offset + 3]);
     raw_offset += 4;
-    rtp_st.rtp_identifier = rtp_h.ssrc;
+    //rtp_st.rtp_identifier = rtp_h.ssrc;
 
     /* Payload size */
     paysize = (rtp_length - raw_offset);
@@ -317,6 +317,7 @@ void rtp_stats_update(struct rtp_header *rtp_h)
     else {*/
     }
         /* Jitter */
+        //ms
         transit = rtp_st.delay_snc_last_SR;
         //printf("TRANSIT!: %i\n", transit); exit(1);
         delta = transit - rtp_st.transit;
@@ -329,6 +330,9 @@ void rtp_stats_update(struct rtp_header *rtp_h)
         //rtp_st.jitter += delta - ((rtp_st.jitter + 8) >> 4);
         rtp_st.jitter += ((1.0/16.0) * ((double) delta - rtp_st.jitter));
 
+        if ( rtp_st.jitter > 0 ) {
+            printf("print");
+        }
         rtp_st.rtp_ts = rtp_h->ts;
         //}
 
@@ -345,6 +349,6 @@ void rtp_stats_print()
     printf("   RTP Received    : %u\n", rtp_st.rtp_received);
     printf("   RTP Identifier  : %u\n", rtp_st.rtp_identifier);
     printf("   RTP Timestamp   : %u\n", rtp_st.rtp_ts);
-    printf("   Jitter          : %u\n", rtp_st.jitter);
+    printf("   Jitter(ms)      : %u\n", rtp_st.jitter);
     printf("   Last DLSR       : %i\n", rtp_st.last_dlsr);
 }
